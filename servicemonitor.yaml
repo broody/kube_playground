@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: prometheus
+  name: slot-service-monitor
+spec:
+  selector:
+    matchExpressions:
+      - { key: app, operator: In, values: [katana, torii] }
+  endpoints:
+    - interval: 10s
+      port: metrics
+      path: "/"
