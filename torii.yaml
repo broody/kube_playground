@@ -6,32 +6,34 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: katana
-  name: katana
+    app: torii
+  name: torii
   namespace: external-nobody
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: katana
+      app: torii
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: katana
+        app: torii
     spec:
       containers:
       - args:
-        - --seed=0
+        - --rpc=http://katana.external-nobody.svc.cluster.local
+        - --world=0x46d71a62ab894b3bbe0bced1b872666dd707fb81e6fd7801b6abd82577391b2
+        - --start-block=0
         - --metrics=0.0.0.0:9100
         command:
-        - katana
-        image: ghcr.io/dojoengine/dojo:v0.4.3
+        - torii
+        image: ghcr.io/dojoengine/dojo:v0.5.0
         imagePullPolicy: IfNotPresent
-        name: katana
+        name: torii
         ports:
-        - containerPort: 5050
+        - containerPort: 8080
           name: http
           protocol: TCP
         - containerPort: 9100
@@ -40,10 +42,10 @@ spec:
         resources:
           limits:
             cpu: "1"
-            memory: 4Gi
+            memory: 2Gi
           requests:
             cpu: 250m
-            memory: 2Gi
+            memory: 512Mi
       restartPolicy: Always
       securityContext:
         fsGroup: 1000
@@ -54,9 +56,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: katana
+  name: torii
   labels:
-    app: katana
+    app: torii
   namespace: external-nobody
 spec:
   type: NodePort
@@ -64,10 +66,10 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: 5050
+      targetPort: 8080
     - name: metrics
       port: 9100
       protocol: TCP
       targetPort: 9100
   selector:
-    app: katana
+    app: torii
