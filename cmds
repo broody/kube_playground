@@ -1,0 +1,2 @@
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/external-nobody/pods/*/katana_jemalloc_active" | jq

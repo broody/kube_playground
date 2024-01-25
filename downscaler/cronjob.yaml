@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: downscaler
+  namespace: prod
+spec:
+  #schedule: "0 0 * * *"  # This schedule runs at midnight every day
+  schedule: "*/1 * * * *"  # This schedule runs every 1 minutes
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: downscaler
+            image: downscaler 
+            imagePullPolicy: Never
+          restartPolicy: Never
